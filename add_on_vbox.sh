@@ -19,7 +19,7 @@ wget http://ftp.fr.debian.org/debian/pool/contrib/v/virtualbox/virtualbox-guest-
 echo -e "\n\t[+] Installation des Additions Invité"
 dpkg -i libnotify-bin_0.7.7-2_amd64.deb virtualbox-guest-*.deb
 
-echo -e "Nettoyage des fichiers d'installation"
+echo -e "\n\t[+] Nettoyage des fichiers d'installation"
 rm libnotify-bin_0.7.7-2_amd64.deb virtualbox-guest-*.deb
 apt autoclean
 
