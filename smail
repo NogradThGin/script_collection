@@ -1,42 +1,24 @@
 #!/bin/bash
 
-SENDUSER=`cat ~/.msmtprc | grep from | awk '{print $2}'`
-NBARGS=$#
-
-if [[ $# -eq 0 ]]
-then
-  echo "Missing option or arguments"
-  echo "(run $0 -h for help)"
-  echo ""
-  exit 0
-fi
-
-ECHO="false"
+NOATT="true"
 FILENAME=
 
-while getopts "he:" OPTION; do
+while getopts "a:h" OPTION; do
   case $OPTION in
-    e)
-      ECHO="true"
-      FILENAME="$OPTARG";;
+    a)
+      NOATT="false"
+  		echo "$4" | mutt -a "$OPTARG" -s "[POP] $3" -- $5
+  		;;
     h)
-      echo "Usage:"
-      echo "$0 -h"
-      echo "$0 -e"
-      echo ""
-      echo "  -e    Permet d'ajouter une piece jointe"
-      echo "  -h    Aide (ce message)"
+      echo -e "\n\e[96m[+]\e[39m Utilisation de la commande \e[91msmail\e[39m:\n"
+      echo -e "\e[96m[+]\e[39m \e[92m-h\e[39m: Affiche ce message"
+      echo -e "\e[96m[+]\e[39m \e[92m-a \e[93m\"FICHIER\"\e[39m: Permet d'ajouter \e[93mFICHIER\e[39m en pièce jointe"
       exit 0
       ;;
     esac
 done
 
-if [[ $ECHO = "true" ]]
+if [[ $NOATT = "true" ]]
 then
-  echo "With Attachment"
-  echo "$4" | mutt -a "$FILENAME" -s "[POP] $3" -- $5
-elif [[ $ECHO = "false" ]]
-then
-  echo "Without Attachment"
   echo "$2" | mutt -s "[POP] $1" -- $3
 fi

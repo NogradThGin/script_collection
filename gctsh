@@ -2,4 +2,13 @@
 
 echo -e "#!/bin/bash\n\n"  > $1
 
-$XDG_SCRIPT_EDITOR $1
+if [[ $XDG_SCRIPT_EDITOR = "" ]]
+then
+	echo -e "\e[91mErreur: Aucun éditeur de script graphique défini!\e[39m"
+	read -p "Quel éditeur utilisé pour éditer les scripts **sh ? " TMP_SE
+	SHITP=$(cat /etc/passwd | grep `whoami` | sed 's/^.*\/bin\//\/bin\//' | cut -c 6-)
+	echo -e "\n# $TMP_SE Export\n\nexport XDG_SCRIPT_EDITOR=atom" >> /home/`whoami`/.${SHITP}rc
+	$TMP_SE $1
+else
+	$XDG_SCRIPT_EDITOR $1
+fi

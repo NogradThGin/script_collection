@@ -1,11 +1,10 @@
 #!/bin/bash
 
-echo "
-      0 : - - - (aucun droit)
-      1 : - - x (exécution)
-      2 : - w - (écriture)
-      3 : - w x (écriture et exécution)
-      4 : r - - (lecture seule)
-      5 : r - x (lecture et exécution)
-      6 : r w - (lecture et écriture)
-      7 : r w x (lecture, écriture et exécution)"
+echo -e "      \e[96m0\e[39m : \e[91m- \e[92m- \e[93m- \e[39m(aucun droit)
+      \e[96m1\e[39m : \e[91m- \e[92m- \e[93mx \e[39m(exécution)
+      \e[96m2\e[39m : \e[91m- \e[92mw \e[93m- \e[39m(écriture)
+      \e[96m3\e[39m : \e[91m- \e[92mw \e[93mx \e[39m(écriture et exécution)
+      \e[96m4\e[39m : \e[91mr \e[92m- \e[93m- \e[39m(lecture seule)
+      \e[96m5\e[39m : \e[91mr \e[92m- \e[93mx \e[39m(lecture et exécution)
+      \e[96m6\e[39m : \e[91mr \e[92mw \e[93m- \e[39m(lecture et écriture)
+      \e[96m7\e[39m : \e[91mr \e[92mw \e[93mx \e[39m(lecture, écriture et exécution)"
