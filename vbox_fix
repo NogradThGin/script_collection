@@ -1,0 +1,7 @@
+#!/bin/bash
+
+KRNLNAME=`uname -r`
+
+sudo apt update
+sudo apt install -y linux-headers-amd64 linux-headers-$KRNLNAME gcc make perl
+/sbin/vboxconfig
