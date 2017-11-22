@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "
+      0 : - - - (aucun droit)
+      1 : - - x (exécution)
+      2 : - w - (écriture)
+      3 : - w x (écriture et exécution)
+      4 : r - - (lecture seule)
+      5 : r - x (lecture et exécution)
+      6 : r w - (lecture et écriture)
+      7 : r w x (lecture, écriture et exécution)"

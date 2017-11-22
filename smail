@@ -1,0 +1,42 @@
+#!/bin/bash
+
+SENDUSER=`cat ~/.msmtprc | grep from | awk '{print $2}'`
+NBARGS=$#
+
+if [[ $# -eq 0 ]]
+then
+  echo "Missing option or arguments"
+  echo "(run $0 -h for help)"
+  echo ""
+  exit 0
+fi
+
+ECHO="false"
+FILENAME=
+
+while getopts "he:" OPTION; do
+  case $OPTION in
+    e)
+      ECHO="true"
+      FILENAME="$OPTARG";;
+    h)
+      echo "Usage:"
+      echo "$0 -h"
+      echo "$0 -e"
+      echo ""
+      echo "  -e    Permet d'ajouter une piece jointe"
+      echo "  -h    Aide (ce message)"
+      exit 0
+      ;;
+    esac
+done
+
+if [[ $ECHO = "true" ]]
+then
+  echo "With Attachment"
+  echo "$4" | mutt -a "$FILENAME" -s "[POP] $3" -- $5
+elif [[ $ECHO = "false" ]]
+then
+  echo "Without Attachment"
+  echo "$2" | mutt -s "[POP] $1" -- $3
+fi
