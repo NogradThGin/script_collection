@@ -12,9 +12,9 @@ apt-get install gcc make perl dkms
 
 echo -e "\n\t[+] Téléchargement des Additions Invité"
 wget http://ftp.fr.debian.org/debian/pool/main/libn/libnotify/libnotify-bin_0.7.7-2_amd64.deb
-wget http://ftp.fr.debian.org/debian/pool/contrib/v/virtualbox/virtualbox-guest-dkms_5.2.0-dfsg-4_all.deb
-wget http://ftp.fr.debian.org/debian/pool/contrib/v/virtualbox/virtualbox-guest-x11_5.2.0-dfsg-4_amd64.deb
-wget http://ftp.fr.debian.org/debian/pool/contrib/v/virtualbox/virtualbox-guest-utils_5.2.0-dfsg-4_amd64.deb
+wget http://ftp.fr.debian.org/debian/pool/contrib/v/virtualbox/virtualbox-guest-dkms_5.2.0-dfsg-2_all.deb
+wget http://ftp.fr.debian.org/debian/pool/contrib/v/virtualbox/virtualbox-guest-x11_5.2.0-dfsg-2_amd64.deb
+wget http://ftp.fr.debian.org/debian/pool/contrib/v/virtualbox/virtualbox-guest-utils_5.2.0-dfsg-2_amd64.deb
 
 echo -e "\n\t[+] Installation des Additions Invité"
 dpkg -i libnotify-bin_0.7.7-2_amd64.deb virtualbox-guest-*.deb
