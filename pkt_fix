@@ -1,0 +1,29 @@
+#!/bin/bash
+
+cd /opt
+mkdir tmp
+cd tmp
+
+wget http://ftp.fr.debian.org/debian/pool/main/o/openssl/libssl1.0.0_1.0.2l-1~bpo8+1_amd64.deb
+dpkg -i libssl1.0.0_1.0.2l-1~bpo8+1_amd64.deb
+
+apt install libqt5multimedia5 libqt5webkit5 libqt5script5 libqt5scripttools5 libqt5xml5	
+
+wget http://192.168.0.139/PacketTracer71_64bit_linux.tar.gz
+tar zxvf PacketTracer71_64bit_linux.tar.gz
+./install
+
+rm -r /opt/tmp
+
+echo "[Desktop Entry]
+Name=Packet Tracer
+Icon=/opt/pt/art/app.png
+Exec=/opt/pt/bin/PacketTracer7
+# Translators: Do NOT translate or transliterate this text (this is an icon file name)!
+Terminal=false
+Type=Application
+Categories=GNOME;
+StartupNotify=true
+Version=1.0" > /usr/share/applications/pkttracer.desktop
+
+## Lancer Pkt Tracer
