@@ -1,0 +1,39 @@
+
+function preexec() {
+  timer=$(($(date +%s%N)/1000000))
+}
+
+function convertsecs() {
+ ((h=${1}/3600))
+ ((m=(${1}%3600)/60))
+ ((s=${1}%60))
+ 
+ h=`printf %.0f $h`
+ 
+ if [[ $h -ge 1 ]]
+ then
+   printf '%1d:%2d:%5.2f' $h $m $s
+ else
+ 	 if [[ $m -ge 1 ]]
+ 	 then
+     printf '%1d:%5.2f' $m $s
+   else
+     printf '%1.2f' $s
+   fi
+ fi
+}
+
+function precmd() {
+  if [ $timer ]; then
+    now=$(($(date +%s%N)/1000000))
+    elapsed=$(($now-$timer))
+    if [ $elapsed -ge 1000 ]; then
+    	elapsed=`echo "scale=2;${elapsed}/1000" | bc`
+      elapsed=$(convertsecs $elapsed elapsed)
+      export RPROMPT="[%F{cyan}${elapsed}s%{$reset_color%}]"
+    else
+      export RPROMPT="[%F{cyan}${elapsed}ms%{$reset_color%}]"
+    fi
+    unset timer
+  fi
+}
