@@ -13,13 +13,15 @@ wget http://192.168.0.126/PacketTracer71_64bit_linux.tar.gz
 tar zxvf PacketTracer71_64bit_linux.tar.gz
 ./install
 
+rm /usr/local/bin/packettracer
+ln -s /opt/pt/bin/PacketTracer7 /usr/local/bin/packettracer
+
 rm -r /opt/tmp
 
 echo "[Desktop Entry]
 Name=Packet Tracer
 Icon=/opt/pt/art/app.png
 Exec=/opt/pt/bin/PacketTracer7
-# Translators: Do NOT translate or transliterate this text (this is an icon file name)!
 Terminal=false
 Type=Application
 Categories=GNOME;
