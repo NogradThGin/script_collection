@@ -1,0 +1,107 @@
+#!/bin/bash
+
+LIST=($(systemctl list-unit-files | awk '{print $1}' | sed '/@.*/d'))
+
+ACTIVE=()
+INACTIVE=()
+MASKED=()
+
+test_active()
+{
+for i in `seq -s' ' 1 $((${#LIST[@]} - 2))`
+do
+	RES=$(systemctl is-active "${LIST[i]}" 2>/dev/null)
+	if [[ $RES = "active" ]]
+	then
+		ACTIVE+=("${LIST[i]}")
+	fi
+done
+}
+
+test_inactive_masked()
+{
+for i in `seq -s' ' 1 $((${#LIST[@]} - 2))`
+do
+	RES=$(systemctl is-active "${LIST[i]}" 2>/dev/null)
+	if [[ $RES = "inactive" ]]
+	then
+		RES=$(systemctl list-unit-files "${LIST[i]}" | grep "${LIST[i]}" | awk '{print $2}')
+		if [[ $RES = "masked" ]]
+		then
+			MASKED+=("${LIST[i]}")
+		else
+			INACTIVE+=("${LIST[i]}")
+		fi
+	fi
+done
+}
+
+function show_active()
+{
+	echo -e "\n\e[0;1;4mList of currently \e[92;1;4mactive\e[0;1;4m services\e[0m\n"
+
+	for value in "${ACTIVE[@]}"; do 
+	    printf "\e[92m%-40s\n" "${value}"
+	done | sort | column -x
+}
+
+function show_inactive()
+{
+	echo -e "\n\e[0;1;4mList of currently \e[91;1;4minactive\e[0;1;4m services\e[0m\n"
+
+	for value in "${INACTIVE[@]}"; do 
+	    printf "\e[91m%-40s\n" "${value}"
+	done | sort | column -x
+}
+
+function show_masked()
+{
+	echo -e "\n\e[0;1;4mList of currently \e[95;1;4mmasked\e[0;1;4m services\e[0m\n"
+
+	for value in "${MASKED[@]}"; do 
+	    printf "\e[95m%-40s\n" "${value}"
+	done | sort | column -x
+}
+
+function print_help()
+{
+	echo -e "\e[96m[+]\e[0m Utilisation de la commande \e[94msvlist\e[0m:\n"
+	echo -e "\e[96m[+] \e[93msvlist\e[0m [options]\n"
+	echo -e "\e[96m[+] \e[94mOptions\e[0m:"
+	echo -e "\e[96m[+] \e[92m-h\e[0m: Affiche ce message"
+	echo -e "\e[96m[+] \e[92m-a\e[0m: Liste les services actuellement actif"
+	echo -e "\e[96m[+] \e[92m-i\e[0m: Liste les services actuellement inactif"
+	echo -e "\e[96m[+] \e[92m-m\e[0m: Liste les services actuellement masqué"
+}
+
+if [ $# -lt 1 ]
+then
+	print_help
+else
+	while getopts "aimh" OPTION; do
+		case $OPTION in
+		a)
+			test_active
+			show_active
+			;;
+		i)
+			if [ -z $INACTIVE ]
+			then
+				test_inactive_masked
+			fi
+			show_inactive
+			;;
+		m)
+			if [ -z $MASKED ]
+			then
+				test_inactive_masked
+			fi
+			show_masked
+			;;
+		h)
+			print_help
+			exit 0
+			;;
+		esac
+	done
+fi
