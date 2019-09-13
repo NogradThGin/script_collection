@@ -1,37 +1,28 @@
 #!/bin/bash
 
-LIST=($(systemctl list-unit-files | awk '{print $1}' | sed '/@.*/d'))
+LIST=($(systemctl list-units --plain --all | sed -e '/(UNIT\|LOAD\|ACTIVE\|SUB\|not-found\|loaded units\|^$\|list-unit-files\|@.*\|.device\|misc.\|)/d' | awk '{print $1"\\t"$2"\\t"$3}'))
 
 ACTIVE=()
 INACTIVE=()
 MASKED=()
 
-test_active()
+fillup()
 {
-for i in `seq -s' ' 1 $((${#LIST[@]} - 2))`
+for i in ${LIST[@]}
 do
-	RES=$(systemctl is-active "${LIST[i]}" 2>/dev/null)
-	if [[ $RES = "active" ]]
-	then
-		ACTIVE+=("${LIST[i]}")
-	fi
-done
-}
+	COL1=($(echo -e $i | awk '{print $1}'))
+	COL2=($(echo -e $i | awk '{print $2}'))
+	COL3=($(echo -e $i | awk '{print $3}'))
 
-test_inactive_masked()
-{
-for i in `seq -s' ' 1 $((${#LIST[@]} - 2))`
-do
-	RES=$(systemctl is-active "${LIST[i]}" 2>/dev/null)
-	if [[ $RES = "inactive" ]]
+	if [[ $COL2 = "loaded" && $COL3 = "active" ]]
 	then
-		RES=$(systemctl list-unit-files "${LIST[i]}" | grep "${LIST[i]}" | awk '{print $2}')
-		if [[ $RES = "masked" ]]
-		then
-			MASKED+=("${LIST[i]}")
-		else
-			INACTIVE+=("${LIST[i]}")
-		fi
+		ACTIVE+=($COL1)
+	elif [[ $COL2 = "loaded" && $COL3 = "inactive" ]]
+	then
+		INACTIVE+=($COL1)
+	elif [[ $COL2 = "masked" ]]
+	then
+		MASKED+=($COL1)
 	fi
 done
 }
@@ -41,7 +32,7 @@ function show_active()
 	echo -e "\n\e[0;1;4mList of currently \e[92;1;4mactive\e[0;1;4m services\e[0m\n"
 
 	for value in "${ACTIVE[@]}"; do 
-	    printf "\e[92m%-40s\n" "${value}"
+	    printf "\e[92m%-50s\e[0m\n" "${value}"
 	done | sort | column -x
 }
 
@@ -50,7 +41,7 @@ function show_inactive()
 	echo -e "\n\e[0;1;4mList of currently \e[91;1;4minactive\e[0;1;4m services\e[0m\n"
 
 	for value in "${INACTIVE[@]}"; do 
-	    printf "\e[91m%-40s\n" "${value}"
+	    printf "\e[91m%-50s\e[0m\n" "${value}"
 	done | sort | column -x
 }
 
@@ -59,7 +50,7 @@ function show_masked()
 	echo -e "\n\e[0;1;4mList of currently \e[95;1;4mmasked\e[0;1;4m services\e[0m\n"
 
 	for value in "${MASKED[@]}"; do 
-	    printf "\e[95m%-40s\n" "${value}"
+	    printf "\e[95m%-50s\e[0m\n" "${value}"
 	done | sort | column -x
 }
 
@@ -81,20 +72,23 @@ else
 	while getopts "aimh" OPTION; do
 		case $OPTION in
 		a)
-			test_active
+			if [ -z $ACTIVE ]
+			then
+				fillup
+			fi
 			show_active
 			;;
 		i)
 			if [ -z $INACTIVE ]
 			then
-				test_inactive_masked
+				fillup
 			fi
 			show_inactive
 			;;
 		m)
 			if [ -z $MASKED ]
 			then
-				test_inactive_masked
+				fillup
 			fi
 			show_masked
 			;;
