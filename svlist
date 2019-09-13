@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LIST=($(systemctl list-units --plain --all | sed -e '/(UNIT\|LOAD\|ACTIVE\|SUB\|not-found\|loaded units\|^$\|list-unit-files\|@.*\|.device\|misc.\|)/d' | awk '{print $1"\\t"$2"\\t"$3}'))
+LIST=($(systemctl list-units --plain --all | sed -e '/(UNIT\|LOAD\|ACTIVE\|SUB\|not-found\|loaded units\|^$\|list-unit-files\|@.*\|.device\|.swap\|misc.\|)/d' | awk '{print $1"\\t"$2"\\t"$3}'))
 
 ACTIVE=()
 INACTIVE=()
@@ -32,7 +32,7 @@ function show_active()
 	echo -e "\n\e[0;1;4mList of currently \e[92;1;4mactive\e[0;1;4m services\e[0m\n"
 
 	for value in "${ACTIVE[@]}"; do 
-	    printf "\e[92m%-50s\e[0m\n" "${value}"
+	    printf "\e[92m%-80s\e[0m\n" "${value}"
 	done | sort | column -x
 }
 
@@ -41,7 +41,7 @@ function show_inactive()
 	echo -e "\n\e[0;1;4mList of currently \e[91;1;4minactive\e[0;1;4m services\e[0m\n"
 
 	for value in "${INACTIVE[@]}"; do 
-	    printf "\e[91m%-50s\e[0m\n" "${value}"
+	    printf "\e[91m%-80s\e[0m\n" "${value}"
 	done | sort | column -x
 }
 
@@ -50,7 +50,7 @@ function show_masked()
 	echo -e "\n\e[0;1;4mList of currently \e[95;1;4mmasked\e[0;1;4m services\e[0m\n"
 
 	for value in "${MASKED[@]}"; do 
-	    printf "\e[95m%-50s\e[0m\n" "${value}"
+	    printf "\e[95m%-80s\e[0m\n" "${value}"
 	done | sort | column -x
 }
 
